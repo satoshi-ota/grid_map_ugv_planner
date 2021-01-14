@@ -19,4 +19,5 @@
     <depend>visualization_msgs</depend>
     <depend>sensor_msgs</depend>
     <depend>octomap_msgs</depend>
+    <depend>pcl_ros</depend>
 </package>

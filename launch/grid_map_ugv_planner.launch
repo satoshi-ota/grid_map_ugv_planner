@@ -1,25 +1,40 @@
 <launch>
-  <rosparam command="load" file="$(find grid_map_ugv_planner)/config/grid_map_landing_planner_filter_chain.yaml" />
-  <!-- TODO: place yaml file here -->
-
-  <node pkg="grid_map_ugv_planner" type="grid_map_ugv_planner_node" name="grid_map_ugv_planner_node" output="screen">
     <rosparam command="load" file="$(find grid_map_ugv_planner)/config/grid_map_landing_planner_filter_chain.yaml" />
-  	<param name="probe_range_limit_x" value="2.0" />
-  	<param name="probe_range_limit_y" value="2.0" />
-  	<param name="probe_range_limit_z_down" value="2.0" />
-  	<param name="probe_range_limit_z_up" value="1.0" />
-  	<param name="visualize_position" value="true" />
-  	<param name="visualize_grid_map" value="true" />
-    <param name="probe_traversability_threshold" value="0.4" />
-  	<param name="visualize_elevation_map" value="false" />
+    <!-- TODO: place yaml file here -->
+    <arg name="use_bagfile" default="true"/>
 
-    <param name="delta" value="0.1" />
-    <param name="boundary_offset" value="2.0" />
-    <param name="max_iteration" value="5000" />
-    <param name="traversability_cost_weight" value="0.01" />
-  </node>
+    <node pkg="grid_map_ugv_planner" type="grid_map_ugv_planner_node" name="grid_map_ugv_planner_node" output="screen">
+        <rosparam command="load" file="$(find grid_map_ugv_planner)/config/grid_map_landing_planner_filter_chain.yaml" />
+        <param name="probe_range_limit_x" value="2.0" />
+        <param name="probe_range_limit_y" value="2.0" />
+        <param name="probe_range_limit_z_down" value="2.0" />
+        <param name="probe_range_limit_z_up" value="1.0" />
+        <param name="visualize_position" value="true" />
+        <param name="visualize_grid_map" value="true" />
+        <param name="probe_traversability_threshold" value="0.4" />
+        <param name="visualize_elevation_map" value="false" />
+        <param name="publish_progress" value="false" />
 
-  <!-- Launch the grid map visualizer -->
-  <node pkg="grid_map_visualization" type="grid_map_visualization" name="grid_map_visualization" output="screen" />
+        <param name="delta" value="0.2" />
+        <param name="goal_tolerance" value="0.2" />
+        <param name="boundary_offset" value="2.0" />
+        <param name="max_iteration" value="10000" />
+        <param name="traversability_cost_weight" value="5.0" />
+        <param name="initial_neaby_radius" value="3.0" />
+
+        <param name="use_bagfile" value="$(arg use_bagfile)" />
+        <!-- Path to the bag file. -->
+        <param name="file_path" value="$(find grid_map_ugv_planner)/data/grid_map_5.bag" />
+        <!-- Topic under which grid map is saved in bag file. -->
+        <param name="bag_topic" value="/grid_map" />
+        <!-- Topic under which grid map should be published. If not set, same as above.-->
+        <param name="publish_topic" value="grid_map" />
+    </node>
+
+    <group if="$(arg use_bagfile)">
+        <include file="$(find mav_base)/launch/rviz.launch"/>
+    </group>
+    <!-- Launch the grid map visualizer -->
+    <node pkg="grid_map_visualization" type="grid_map_visualization" name="grid_map_visualization" output="screen" />
 
 </launch>

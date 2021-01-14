@@ -1,4 +1,4 @@
-grid_map_filters:
+postprocessor_pipeline:
 
   - name: buffer_normalizer
     type: gridMapFilters/BufferNormalizerFilter
@@ -30,7 +30,7 @@ grid_map_filters:
     params:
       input_layer: elevation
       output_layer: elevation_smooth
-      radius: 0.2
+      radius: 0.5
 
   # Boxblur as an alternative to the inpaint and radial blurring filter above.
   # - name: boxblur
@@ -108,7 +108,7 @@ grid_map_filters:
     params:
       input_layer: traversability
       output_layer: traversability_inflated
-      radius: 0.1
+      radius: 0.4
   # Set lower threshold on traversability.
   #- name: traversability_lower_threshold
   #  type: gridMapFilters/ThresholdFilter

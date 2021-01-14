@@ -1,0 +1,33 @@
+# point_cloud_topic: "/pico_flexx/points"
+# map_frame_id: "map"
+# robot_base_frame_id: "mav_base_link"
+# robot_pose_with_covariance_topic: "/mavros/vision_pose/pose_cov"
+# robot_pose_cache_size: 500
+# track_point_frame_id: "mav_base_link"
+# track_point_x: 0.0
+# track_point_y: 0.0
+# track_point_z: 0.0
+min_update_rate: 2.0
+# time_tolerance: 0.5
+# sensor_processor/ignore_points_above: 0.4
+# robot_motion_map_update/covariance_scale_translation_x: 0.0
+# robot_motion_map_update/covariance_scale_translation_y: 0.0
+# robot_motion_map_update/covariance_scale_translation_z: 0.0
+# robot_motion_map_update/covariance_scale_rotation_x: 0.0
+# robot_motion_map_update/covariance_scale_rotation_y: 0.0
+# robot_motion_map_update/covariance_scale_rotation_z: 0.0
+
+length_in_x:                                10.0
+length_in_y:                                10.0
+position_x:                                 0.0
+position_y:                                 0.0
+resolution:                                 0.1
+min_variance:                               0.0001
+max_variance:                               0.05
+mahalanobis_distance_threshold:             2.5
+multi_height_noise:                         0.001
+surface_normal_positive_axis:               z
+fused_map_publishing_rate:                  0.5
+enable_visibility_cleanup:                  true
+visibility_cleanup_rate:                    1.0
+scanning_duration:                          1.0

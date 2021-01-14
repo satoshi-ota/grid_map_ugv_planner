@@ -6,14 +6,16 @@
 #include <Eigen/Geometry>
 
 #include <ros/ros.h>
+#include <grid_map_loader/GridMapLoader.hpp>
+#include <grid_map_msgs/GridMap.h>
 #include <grid_map_ros/grid_map_ros.hpp>
 #include <filters/filter_chain.h>
 #include <tf/transform_listener.h>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 #include <tf2/LinearMath/Quaternion.h>
-
+#include <visualization_msgs/MarkerArray.h>
 #include <nav_msgs/GetPlan.h>
-
+#include <pcl_ros/point_cloud.h>
 #include <octomap_msgs/Octomap.h>
 #include <octomap/octomap.h>
 #include <octomap_msgs/conversions.h>
@@ -26,17 +28,19 @@ public:
     Vertex(Eigen::Vector2d& _pos)
         :c_state(_pos),
          parent_v_ptr(NULL),
-         cost(0.0){}
+         // total_cost(0.0),
+         local_cost(0.0){}
     ~Vertex(){}
 
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     Eigen::Vector2d c_state;
 
-    std::vector<Vertex*> children_ptr;
+    // std::vector<Vertex*> children_ptr;
     std::vector<Vertex*> parents_ptr;
     Vertex* parent_v_ptr;
 
-    double cost;
+    // double total_cost;
+    double local_cost;
 };
 
 class GridMapUGVPlanner
@@ -62,13 +66,26 @@ public:
 
     double getTraversabilityCost(const Eigen::Vector2d& p1, const Eigen::Vector2d& p2);
 
+    double getTotalCost(const Vertex* v);
+
 private:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
     ros::Publisher plan_pub_;
-    // ros::Publisher sample_pub_;
-    // ros::Publisher subset_pub_;
+    ros::Publisher sample_pub_;
+    ros::Publisher tree_pub_;
+    ros::Publisher path_pub_;
+    pcl::PointCloud<pcl::PointXYZRGB> sample_points_;
+    //! Path the ROS bag to be published.
+    std::string filePath_;
 
+    //! Topic name of the grid map in the ROS bag.
+    std::string bagTopic_;
+
+    //! Topic name of the grid map to be loaded.
+    std::string publishTopic_;
+
+    bool use_bagfile_;
 
     Eigen::Vector2d bbx_origin_;
     Eigen::Vector2d bbx_range_;
@@ -85,7 +102,7 @@ private:
     std::mt19937 engine_;
 
     bool rearched_goal_;
-
+    bool publish_progress_;
 
     int max_itr_;
     double delta_;
@@ -97,6 +114,7 @@ private:
     double trajectory_res_;
 
     double traversability_cost_weight_;
+    double initial_neaby_radius_;
 
     tf2_ros::Buffer& tf_;
 
@@ -120,7 +138,7 @@ private:
     float probe_range_limit_y_;
     float probe_range_limit_z_down_;
     float probe_range_limit_z_up_;
-    float probe_traversability_threshold_;
+    double probe_traversability_threshold_;
     float landing_traversability_threshold_;
     bool octomap_received_;
     bool visualize_position_;

@@ -17,6 +17,7 @@ set(PACKAGE_DEPENDENCIES
     visualization_msgs
     sensor_msgs
     octomap_msgs
+    pcl_ros
     filters
 )
 
